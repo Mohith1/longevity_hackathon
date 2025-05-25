@@ -37,6 +37,14 @@ dependencies:
 
 dev_dependencies:
   flutter_test:
+    assets:
+     - assets/images/Bold-Phoenix.png
+     - assets/images/group_yoga.png
+     - assets/images/group_flex.png
+     - assets/images/group_senior.png
+     - assets/images/group_weekend.png
+     - assets/images/Flexiwish_Logo.png
+     - assets/images/captain_america_dp.png
     sdk: flutter
 
   # The "flutter_lints" package below contains a set of recommended lints to

@@ -1,0 +1,125 @@
+// lib/welcome_screen.dart
+
+import 'dart:async';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart'; // Import google_fonts
+import 'login_screen.dart'; // Navigate to LoginScreen after splash
+
+/// A welcome screen that displays the app logo and tagline
+/// then transitions to the LoginScreen after 4 seconds.
+class WelcomeScreen extends StatefulWidget {
+  const WelcomeScreen({Key? key}) : super(key: key);
+
+  @override
+  _WelcomeScreenState createState() => _WelcomeScreenState();
+}
+
+class _WelcomeScreenState extends State<WelcomeScreen> with SingleTickerProviderStateMixin {
+  late final AnimationController _animController;
+  late final Animation<double> _fadeAnim;
+
+  @override
+  void initState() {
+    super.initState();
+    // Initialize animation controller for fading and scaling
+    _animController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 800),
+    );
+    _fadeAnim = CurvedAnimation(parent: _animController, curve: Curves.easeInOut);
+    // Play fade-in and scale animations once
+    _animController.forward();
+
+    // After 4 seconds, navigate to login screen
+    Timer(const Duration(seconds: 4), () {
+      if (mounted) { // Check if the widget is still in the tree
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (_) => const LoginScreen()),
+        );
+      }
+    });
+  }
+
+  @override
+  void dispose() {
+    _animController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+          gradient: LinearGradient(
+            colors: [primary, primary.withOpacity(0.75)],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              // Animated logo with rounded corners and shadow
+              FadeTransition(
+                opacity: _fadeAnim,
+                child: ScaleTransition(
+                  scale: _fadeAnim,
+                  child: Container(
+                    width: 120,
+                    height: 120,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(24),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.2),
+                          blurRadius: 8,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(24),
+                      child: Image.asset(
+                        'assets/images/Flexiwish_Logo.png', // Ensure this path is correct
+                        fit: BoxFit.cover,
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 32),
+              // Animated italic tagline with subtle shadow and custom font
+              FadeTransition(
+                opacity: _fadeAnim,
+                child: Text(
+                  'Welcome to FlexiWish \n Move Freely, Live Fully',
+                  textAlign: TextAlign.center,
+                  style: GoogleFonts.lato( // Using Lato font from Google Fonts
+                    textStyle: TextStyle( // You can still use TextStyle to customize further
+                      fontSize: 35,
+                      fontStyle: FontStyle.italic,
+                      fontWeight: FontWeight.w600, // Lato supports various weights
+                      color: Colors.white,
+                      letterSpacing: 0.5, // Optional: adjust letter spacing for aesthetics
+                      shadows: [
+                        Shadow(
+                          offset: const Offset(1, 1),
+                          blurRadius: 2,
+                          color: Colors.black38, // Slightly adjusted shadow color for better blend
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

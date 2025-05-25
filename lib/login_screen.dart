@@ -1,6 +1,7 @@
 // lib/login_screen.dart
 
 import 'package:flutter/material.dart';
+import 'permission_flow.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({Key? key}) : super(key: key);
@@ -144,7 +145,11 @@ class _LoginScreenState extends State<LoginScreen> {
   void _submit() {
     if (_formKey.currentState?.validate() ?? false) {
       // TODO: integrate authentication service here
-      Navigator.pushReplacementNamed(context, '/survey');
+      Navigator.pushReplacement(
+  context,
+  MaterialPageRoute(builder: (_) => const PermissionScreen()),
+);
+
     }
   }
 

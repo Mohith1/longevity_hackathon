@@ -1,6 +1,8 @@
 // lib/survey_screen.dart
 
+import 'dart:async';
 import 'package:flutter/material.dart';
+import 'transition_screen.dart'; // Navigate to TransitionScreen after submit
 
 class SurveyScreen extends StatefulWidget {
   const SurveyScreen({Key? key}) : super(key: key);
@@ -12,19 +14,25 @@ class SurveyScreen extends StatefulWidget {
 class _SurveyScreenState extends State<SurveyScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  // Form fields
+  // Existing form fields
   final TextEditingController _ageController = TextEditingController();
   String? _selectedSex;
   final List<String> _selectedGoals = [];
   final TextEditingController _notesController = TextEditingController();
+
+  // New form fields
+  final TextEditingController _heightController = TextEditingController();
+  final TextEditingController _weightController = TextEditingController();
+  final TextEditingController _occupationController = TextEditingController();
+  final TextEditingController _locationController = TextEditingController();
 
   // Options
   final List<String> _sexOptions = ['Male', 'Female', 'Other'];
   final List<String> _goalOptions = [
     'Joint Mobility',
     'Flexibility',
-    'Strength',
-    'Pain Relief',
+    'Pain/Fatigure Relief',
+    'Stiffness'
   ];
 
   @override
@@ -53,7 +61,7 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
                   const SizedBox(height: 24),
 
-                  // Age
+                  // Age field
                   TextFormField(
                     controller: _ageController,
                     decoration: const InputDecoration(
@@ -71,7 +79,75 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
 
                   const SizedBox(height: 20),
-                  // Sex
+                  // Height field
+                  TextFormField(
+                    controller: _heightController,
+                    decoration: const InputDecoration(
+                      labelText: 'Height (cm)',
+                      prefixIcon: Icon(Icons.height),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      final height = double.tryParse(value ?? '');
+                      if (height == null || height <= 0 || height > 300) {
+                        return 'Enter a valid height in cm';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+                  // Weight field
+                  TextFormField(
+                    controller: _weightController,
+                    decoration: const InputDecoration(
+                      labelText: 'Weight (kg)',
+                      prefixIcon: Icon(Icons.fitness_center),
+                    ),
+                    keyboardType: TextInputType.number,
+                    validator: (value) {
+                      final weight = double.tryParse(value ?? '');
+                      if (weight == null || weight <= 0 || weight > 500) {
+                        return 'Enter a valid weight in kg';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+                  // Occupation field
+                  TextFormField(
+                    controller: _occupationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Occupation',
+                      prefixIcon: Icon(Icons.work),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Enter your occupation';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 20),
+                  // Location field
+                  TextFormField(
+                    controller: _locationController,
+                    decoration: const InputDecoration(
+                      labelText: 'Location',
+                      prefixIcon: Icon(Icons.location_on),
+                    ),
+                    validator: (value) {
+                      if (value == null || value.trim().isEmpty) {
+                        return 'Enter your location';
+                      }
+                      return null;
+                    },
+                  ),
+
+                  const SizedBox(height: 24),
+                  // Sex dropdown
                   DropdownButtonFormField<String>(
                     value: _selectedSex,
                     decoration: const InputDecoration(
@@ -79,16 +155,17 @@ class _SurveyScreenState extends State<SurveyScreen> {
                       prefixIcon: Icon(Icons.wc),
                     ),
                     items: _sexOptions
-                        .map((sex) =>
-                            DropdownMenuItem(value: sex, child: Text(sex)))
+                        .map((sex) => DropdownMenuItem(
+                              value: sex,
+                              child: Text(sex),
+                            ))
                         .toList(),
                     onChanged: (val) => setState(() => _selectedSex = val),
-                    validator: (value) =>
-                        value == null ? 'Please select your sex' : null,
+                    validator: (value) => value == null ? 'Please select your sex' : null,
                   ),
 
                   const SizedBox(height: 24),
-                  // Joint Health Goals
+                  // Joint Health Goals chips
                   Text(
                     'Joint Health Goals',
                     style: Theme.of(context)
@@ -130,15 +207,12 @@ class _SurveyScreenState extends State<SurveyScreen> {
                   ),
 
                   const SizedBox(height: 32),
-                  // Submit Survey
+                  // Submit Survey Button
                   Center(
                     child: ElevatedButton(
                       style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 14, horizontal: 32),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 14, horizontal: 32),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
                       ),
                       onPressed: _submitSurvey,
                       child: const Text('Submit', style: TextStyle(fontSize: 16)),
@@ -161,17 +235,25 @@ class _SurveyScreenState extends State<SurveyScreen> {
         );
         return;
       }
-      // TODO: send survey data to backend or save locally
+      // Show confirmation
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Survey submitted successfully!')),
       );
-      // Navigate onward, e.g. to dashboard
+      // Navigate to TransitionScreen
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(builder: (context) => const TransitionScreen()),
+      );
     }
   }
 
   @override
   void dispose() {
     _ageController.dispose();
+    _heightController.dispose();
+    _weightController.dispose();
+    _occupationController.dispose();
+    _locationController.dispose();
     _notesController.dispose();
     super.dispose();
   }
