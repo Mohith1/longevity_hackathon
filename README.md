@@ -1,6 +1,6 @@
-FlexiWish is a health-oriented mobile application designed to assist users in monitoring their joint flexibility and tracking personalized wellness goals over time. The application integrates a structured onboarding process, interactive visual progress indicators, and user-centric interface principles to deliver a streamlined health tracking experience.
+**FlexiWish** is a health-oriented mobile application designed to assist users in monitoring their joint flexibility and tracking personalized wellness goals over time. The application integrates a structured onboarding process, interactive visual progress indicators, and user-centric interface principles to deliver a streamlined health tracking experience.
 
-Key Functional Modules
+**Key Functional Modules -**
 1. User Authentication
 The application initiates with a secure authentication system that allows users to either log in or sign up.
 
